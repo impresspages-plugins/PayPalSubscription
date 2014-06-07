@@ -188,6 +188,11 @@ class PayPalModel
 
     public function getPaypalForm($orderId)
     {
+        if (!$this->getEmail()) {
+            throw new \Ip\Exception('Please enter configuration values for PayPal Subscription plugin');
+        }
+
+
         $order = Model::getOrder($orderId);
         if (!$order) {
             throw new \Ip\Exception("Can't find order id. " . $orderId);
