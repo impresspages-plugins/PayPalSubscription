@@ -194,7 +194,7 @@ class PayPalModel
         }
 
 
-        $currency = 'USD';
+        $currency = 'MYR';
         $privateData = array(
             'orderId' => $orderId,
             'userId' => $order['userId']
