@@ -44,6 +44,12 @@ class Model
         $data['p3'] = $paymentData['period'];
         $data['a3'] = $paymentData['amount'];
 
+        if (!empty($paymentData['title'])) {
+            $data['title'] = $paymentData['title'];
+        } else {
+            $data['title'] = $data['item'];
+        }
+
         $orderId = ipDb()->insert('paypal_subscription', $data);
         return $orderId;
     }

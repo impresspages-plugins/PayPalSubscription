@@ -219,7 +219,8 @@ class PayPalModel
             'no_shipping' => 1,
             'custom' => json_encode($privateData),
             'return' => ipRouteUrl('PayPalSubscription_ipn'),
-            'notify_url' => ipRouteUrl('PayPalSubscription_ipn')
+            'notify_url' => ipRouteUrl('PayPalSubscription_ipn'),
+            'item_name' => $order['title']
         );
 
         $form = new \Ip\Form();

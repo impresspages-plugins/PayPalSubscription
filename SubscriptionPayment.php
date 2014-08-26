@@ -16,7 +16,7 @@ class SubscriptionPayment extends \Ip\SubscriptionPayment
 
     public function icon($width = null, $height = null)
     {
-        return '';
+        return ipFileUrl('Plugin/PayPalSubscription/assets/PayPal.svg');
     }
 
     /**

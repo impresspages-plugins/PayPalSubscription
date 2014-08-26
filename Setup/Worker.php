@@ -32,5 +32,30 @@ class Worker
         ";
 
         ipDb()->execute($sql);
+
+
+        //add title column if not exist
+        $sql = "
+        SELECT
+          *
+        FROM
+          information_schema.COLUMNS
+        WHERE
+            TABLE_SCHEMA = :database
+            AND TABLE_NAME = :table
+            AND COLUMN_NAME = :column
+        ";
+        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'title'));
+        if (!$result) {
+            $sql = "ALTER TABLE `ip_paypal_subscription` ADD `title` VARCHAR(255) NOT NULL AFTER `userId`;";
+            ipDb()->execute($sql);
+        }
+
+
+    }
+
+    public function deactivate()
+    {
+
     }
 }
