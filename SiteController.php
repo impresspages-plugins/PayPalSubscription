@@ -20,7 +20,8 @@ class SiteController extends \Ip\Controller
 
         if (!$order['userId']) {
             if (!ipUser()->loggedIn()) {
-                throw new \Ip\Exception('User is not logged in');
+                $_SESSION['User_redirectAfterLogin'] = ipRequest()->getUrl();
+                return new \Ip\Response\Redirect(ipRouteUrl('User_login'));
             }
             Model::update($orderId, array('userId' => ipUser()->userId()));
             $order = Model::getOrder($orderId);
