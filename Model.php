@@ -21,11 +21,15 @@ class Model
 
         $data = array(
             'item' => $paymentData['item'],
+            'cancelUrl' => empty($paymentData['cancelUrl']) ? '' : $paymentData['cancelUrl'],
+            'successUrl' => empty($paymentData['successUrl']) ? '' : $paymentData['successUrl'],
             'currency' => $paymentData['currency'],
             'userId' => $userId,
             'securityCode' => self::randomString(32),
             'createdAt' => date('Y-m-d H:i:s')
         );
+
+
 
         switch($paymentData['periodType']) {
             case 'day':

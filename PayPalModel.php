@@ -119,6 +119,12 @@ class PayPalModel
                     return;
                 }
 
+                if ($response["httpResponse"] != 'VERIFIED') {
+                    ipLog()->error('PayPalSubscription.ipn: Paypal doesn\'t recognize the IPN', $response);
+                    return;
+                }
+
+
                 ipLog()->info('PayPalSubscription.ipn: Subscription expired', $response);
                 $info = array(
                     'item' => $order['item'],

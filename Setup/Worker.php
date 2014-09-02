@@ -59,6 +59,18 @@ class Worker
         }
 
 
+        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'successUrl'));
+        if (!$result) {
+            $sql = "ALTER TABLE `ip_paypal_subscription` ADD `successUrl` VARCHAR(255) NOT NULL AFTER `isActive`;";
+            ipDb()->execute($sql);
+        }
+
+        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'cancelUrl'));
+        if (!$result) {
+            $sql = "ALTER TABLE `ip_paypal_subscription` ADD `cancelUrl` VARCHAR(255) NOT NULL AFTER `isActive`;";
+            ipDb()->execute($sql);
+        }
+
     }
 
     public function deactivate()

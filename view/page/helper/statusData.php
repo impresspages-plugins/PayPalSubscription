@@ -40,3 +40,6 @@
         <td><?php echo esc(ipFormatDateTime(strtotime($payment['createdAt']), 'PayPalSubscription')) ?></td>
     </tr>
 </table>
+<?php if (!$payment['isActive']) { ?>
+<p><?php echo __('Your payment may be on its way. If you are sure you have completed the subscription process, please refresh the page to see recent status.', 'PayPalSubscription') ?></p>
+<?php } ?>
