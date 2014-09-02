@@ -46,7 +46,7 @@ class PayPalModel
 
         $response = $this->httpPost($postUrl, $postData);
 
-        if (!$this->isInSandboxMode() && (!$response["status"] || $response["httpResponse"] != 'VERIFIED')) {
+        if (!$response["status"]) {
             ipLog()->error(
                 'PayPalSubscription.ipn: notification check error',
                 $response
@@ -56,28 +56,21 @@ class PayPalModel
 
         $customData = json_decode($postData['custom'], true);
 
-        $orderId = isset($customData['orderId']) ? $customData['orderId'] : null;
+        $paymentId = isset($customData['paymentId']) ? $customData['paymentId'] : null;
         $currency = isset($postData['mc_currency']) ? $postData['mc_currency'] : null;
         $receiver = isset($postData['receiver_email']) ? $postData['receiver_email'] : null;
         $period = isset($postData['period3']) ? $postData['period3'] : null;
-        $test = isset($postData['test_ipn']) ? $postData['test_ipn'] : null;
         $a3 = isset($postData['mc_amount3']) ? $postData['mc_amount3'] : null;
-
-
-        if ($test != $this->isInSandboxMode()) {
-            ipLog()->error('PayPalSubscription.ipn: IPN rejected. Test mode conflict', $response);
-            return;
-        }
 
 
         switch ($postData['txn_type']) {
             case 'subscr_signup':
 
 
-                $order = Model::getPayment($orderId);
+                $order = Model::getPayment($paymentId);
 
                 if (!$order) {
-                    ipLog()->error('PayPalSubscription.ipn: Order not found.', array('orderId' => $orderId));
+                    ipLog()->error('PayPalSubscription.ipn: Order not found.', array('orderId' => $paymentId));
                     return;
                 }
 
@@ -117,12 +110,12 @@ class PayPalModel
                 );
                 ipLog()->info('PayPalSubscription.ipn: Successful sign-up', $info);
                 ipEvent('ipSubscriptionSignup', $info);
-                Model::update($orderId, array('isActive' => 1));
+                Model::update($paymentId, array('isActive' => 1));
                 break;
             case 'subscr_eot':
-                $order = Model::getPayment($orderId);
+                $order = Model::getPayment($paymentId);
                 if (!$order) {
-                    ipLog()->error('PayPalSubscription.ipn: Order not found.', array('orderId' => $orderId));
+                    ipLog()->error('PayPalSubscription.ipn: Order not found.', array('orderId' => $paymentId));
                     return;
                 }
 
@@ -136,7 +129,7 @@ class PayPalModel
                 if (!$order['isActive']) {
                     ipLog()->error('PayPalSubscription.ipn: Subscription is already inactive', $response);
                 }
-                Model::update($orderId, array('isActive' => 0));
+                Model::update($paymentId, array('isActive' => 0));
 
                 break;
         }

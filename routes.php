@@ -25,7 +25,7 @@ $routes['paypalSubscriptionReturn'] = array(
 );
 
 
-$routes['paypalSubscriptionStatus'] = array(
+$routes['paypalSubscriptionStatus/{paymentId}/{securityCode}'] = array(
     'name' => 'PayPalSubscription_status',
     'plugin' => 'PayPalSubscription',
     'controller' => 'SiteController',
