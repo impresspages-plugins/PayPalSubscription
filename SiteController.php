@@ -10,21 +10,25 @@ namespace Plugin\PayPalSubscription;
 
 class SiteController extends \Ip\Controller
 {
-    public function subscribe($orderId)
+    public function subscribe($paymentId, $securityCode)
     {
-        $order = Model::getOrder($orderId);
-        if (!$order) {
-            throw new \Ip\Exception('Order ' . $orderId . ' doesn\'t exist');
+        $payment = Model::getPayment($paymentId);
+        if (!$payment) {
+            throw new \Ip\Exception('Order ' . $paymentId . ' doesn\'t exist');
         }
 
 
-        if (!$order['userId']) {
+        if ($payment['securityCode'] != $securityCode) {
+            throw new \Ip\Exception('Payment security code is incorrect. Order Id '. $paymentId . '. SecurityCode ' . $securityCode);
+        }
+
+
+        if (!$payment['userId']) {
             if (!ipUser()->loggedIn()) {
                 $_SESSION['User_redirectAfterLogin'] = ipRequest()->getUrl();
                 return new \Ip\Response\Redirect(ipRouteUrl('User_login'));
             }
-            Model::update($orderId, array('userId' => ipUser()->userId()));
-            $order = Model::getOrder($orderId);
+            Model::update($paymentId, array('userId' => ipUser()->userId()));
         }
 
 
@@ -32,7 +36,7 @@ class SiteController extends \Ip\Controller
 
 
         $data = array(
-            'form' => $paypalModel->getPaypalForm($orderId)
+            'form' => $paypalModel->getPaypalForm($paymentId)
         );
 
         $answer = ipView('view/page/paymentRedirect.php', $data)->render();
@@ -40,5 +44,23 @@ class SiteController extends \Ip\Controller
 
         return $answer;
 
+    }
+
+    public function status($paymentId, $securityCode)
+    {
+        $payment = Model::getPayment($paymentId);
+        if (!$payment) {
+            throw new \Ip\Exception('Unknown order. Id: ' . $paymentId);
+        }
+        if ($payment['securityCode'] != $securityCode) {
+            throw new \Ip\Exception('Incorrect order security code');
+        }
+
+        $data = array(
+            'payment' => $payment,
+            'paymentUrl' => ipRouteUrl('PayPalSubscription_pay', array('paymentId' => $payment['id'], 'securityCode' => $payment['securityCode']))
+        );
+        $view = ipView('view/page/status.php', $data);
+        return $view;
     }
 }

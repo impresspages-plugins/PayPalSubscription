@@ -46,7 +46,7 @@ class PayPalModel
 
         $response = $this->httpPost($postUrl, $postData);
 
-        if (!$response["status"]) {
+        if (!$this->isInSandboxMode() && (!$response["status"] || $response["httpResponse"] != 'VERIFIED')) {
             ipLog()->error(
                 'PayPalSubscription.ipn: notification check error',
                 $response
@@ -74,7 +74,7 @@ class PayPalModel
             case 'subscr_signup':
 
 
-                $order = Model::getOrder($orderId);
+                $order = Model::getPayment($orderId);
 
                 if (!$order) {
                     ipLog()->error('PayPalSubscription.ipn: Order not found.', array('orderId' => $orderId));
@@ -120,7 +120,7 @@ class PayPalModel
                 Model::update($orderId, array('isActive' => 1));
                 break;
             case 'subscr_eot':
-                $order = Model::getOrder($orderId);
+                $order = Model::getPayment($orderId);
                 if (!$order) {
                     ipLog()->error('PayPalSubscription.ipn: Order not found.', array('orderId' => $orderId));
                     return;
@@ -193,7 +193,7 @@ class PayPalModel
         }
 
 
-        $order = Model::getOrder($orderId);
+        $order = Model::getPayment($orderId);
         if (!$order) {
             throw new \Ip\Exception("Can't find order id. " . $orderId);
         }
@@ -201,8 +201,9 @@ class PayPalModel
 
         $currency = $order['currency'];
         $privateData = array(
-            'orderId' => $orderId,
-            'userId' => $order['userId']
+            'paymentId' => $orderId,
+            'userId' => $order['userId'],
+            'securityCode' => $order['securityCode']
         );
 
 
@@ -215,10 +216,11 @@ class PayPalModel
             'p3' => $order['p3'],
             'a3' => $order['a3'] / 100,
             'src' => 1,
+            'rm' => 2,
             'sra' => 1,
             'no_shipping' => 1,
             'custom' => json_encode($privateData),
-            'return' => ipRouteUrl('PayPalSubscription_ipn'),
+            'return' => ipRouteUrl('PayPalSubscription_userBack'),
             'notify_url' => ipRouteUrl('PayPalSubscription_ipn'),
             'item_name' => $order['title']
         );

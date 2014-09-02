@@ -9,7 +9,7 @@ namespace Plugin\PayPalSubscription;
 
 class Model
 {
-    public static function createOrder($paymentData, $userId = null)
+    public static function createPayment($paymentData, $userId = null)
     {
         if ($userId == null) {
             $userId = ipUser()->userId();
@@ -23,6 +23,7 @@ class Model
             'item' => $paymentData['item'],
             'currency' => $paymentData['currency'],
             'userId' => $userId,
+            'securityCode' => self::randomString(32),
             'createdAt' => date('Y-m-d H:i:s')
         );
 
@@ -54,7 +55,7 @@ class Model
         return $orderId;
     }
 
-    public static function getOrder($orderId)
+    public static function getPayment($orderId)
     {
         $order = ipDb()->selectRow('paypal_subscription', '*', array('id' => $orderId));
         return $order;
@@ -62,5 +63,10 @@ class Model
     public static function update($orderId, $data)
     {
         ipDb()->update('paypal_subscription', $data, array('id' => $orderId));
+    }
+
+    protected static function randomString($length)
+    {
+        return substr(sha1(rand()), 0, $length);
     }
 }

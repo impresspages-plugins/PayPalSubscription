@@ -52,6 +52,13 @@ class Worker
         }
 
 
+        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'securityCode'));
+        if (!$result) {
+            $sql = "ALTER TABLE `ip_paypal_subscription` ADD `securityCode` VARCHAR(32) NOT NULL AFTER `isActive`;";
+            ipDb()->execute($sql);
+        }
+
+
     }
 
     public function deactivate()

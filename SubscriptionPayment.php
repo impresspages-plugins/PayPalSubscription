@@ -29,10 +29,12 @@ class SubscriptionPayment extends \Ip\SubscriptionPayment
      */
     public function paymentUrl($data)
     {
-        $orderId = Model::createOrder($data);
+        $paymentId = Model::createPayment($data);
+        $payment = Model::getPayment($paymentId);
         $urlData = array(
-            'orderId' => $orderId
+            'paymentId' => $paymentId,
+            'securityCode' => $payment['securityCode']
         );
-        return ipRouteUrl('PayPalSubscription', $urlData);
+        return ipRouteUrl('PayPalSubscription_pay', $urlData);
     }
 }

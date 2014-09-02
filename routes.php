@@ -1,7 +1,7 @@
 <?php
 
-$routes['paypalSubscription{/orderId}'] = array(
-    'name' => 'PayPalSubscription',
+$routes['paypalSubscription/{paymentId}/{securityCode}'] = array(
+    'name' => 'PayPalSubscription_pay',
     'plugin' => 'PayPalSubscription',
     'controller' => 'SiteController',
     'action' => 'subscribe'
@@ -13,4 +13,21 @@ $routes['paypalSubscriptionIPN'] = array(
     'plugin' => 'PayPalSubscription',
     'controller' => 'PublicController',
     'action' => 'ipn'
+);
+
+
+
+$routes['paypalSubscriptionReturn'] = array(
+    'name' => 'PayPalSubscription_userBack',
+    'plugin' => 'PayPalSubscription',
+    'controller' => 'PublicController',
+    'action' => 'userBack'
+);
+
+
+$routes['paypalSubscriptionStatus'] = array(
+    'name' => 'PayPalSubscription_status',
+    'plugin' => 'PayPalSubscription',
+    'controller' => 'SiteController',
+    'action' => 'status'
 );
