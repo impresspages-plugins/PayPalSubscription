@@ -9,7 +9,7 @@
             "label": "",
             "name": "",
             "type": "Info",
-            "html": "<p class=\"alert alert-info\">This is just the payment method. Please install <b>SimpleProduct</b> or other plugin to actually sell something.</p>"
+            "html": "<p class=\"alert alert-info\">This is just the payment method. Please install <b>Subscription button</b> or other plugins to initiate the subscription payment.</p>"
         },
         {
             "label": "PayPal email",
