@@ -6,6 +6,12 @@
     "author": "ImpressPages",
     "options": [
         {
+            "label": "",
+            "name": "",
+            "type": "Info",
+            "html": "<p class=\"alert alert-info\">This is just the payment method. Please install <b>SimpleProduct</b> or other plugin to actually sell something.</p>"
+        },
+        {
             "label": "PayPal email",
             "name": "paypalEmail",
             "type": "text",

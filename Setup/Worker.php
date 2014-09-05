@@ -35,7 +35,7 @@ class Worker
 
 
         //add title column if not exist
-        $sql = "
+        $ceckSql = "
         SELECT
           *
         FROM
@@ -45,27 +45,27 @@ class Worker
             AND TABLE_NAME = :table
             AND COLUMN_NAME = :column
         ";
-        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'title'));
+        $result = ipDb()->fetchAll($ceckSql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'title'));
         if (!$result) {
             $sql = "ALTER TABLE `ip_paypal_subscription` ADD `title` VARCHAR(255) NOT NULL AFTER `userId`;";
             ipDb()->execute($sql);
         }
 
 
-        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'securityCode'));
+        $result = ipDb()->fetchAll($ceckSql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'securityCode'));
         if (!$result) {
             $sql = "ALTER TABLE `ip_paypal_subscription` ADD `securityCode` VARCHAR(32) NOT NULL AFTER `isActive`;";
             ipDb()->execute($sql);
         }
 
 
-        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'successUrl'));
+        $result = ipDb()->fetchAll($ceckSql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'successUrl'));
         if (!$result) {
             $sql = "ALTER TABLE `ip_paypal_subscription` ADD `successUrl` VARCHAR(255) NOT NULL AFTER `isActive`;";
             ipDb()->execute($sql);
         }
 
-        $result = ipDb()->fetchAll($sql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'cancelUrl'));
+        $result = ipDb()->fetchAll($ceckSql, array('database' => ipConfig()->database(), 'table' => ipConfig()->tablePrefix() . 'paypal_subscription', 'column' => 'cancelUrl'));
         if (!$result) {
             $sql = "ALTER TABLE `ip_paypal_subscription` ADD `cancelUrl` VARCHAR(255) NOT NULL AFTER `isActive`;";
             ipDb()->execute($sql);
