@@ -73,4 +73,11 @@ class Model
     {
         return substr(sha1(rand()), 0, $length);
     }
+
+
+    public static function getActiveSubscription($item, $userId)
+    {
+        $subscription = ipDb()->selectRow('paypal_subscription', '*', array('item' => $item, 'userId' => $userId, 'isActive' => 1));
+        return $subscription;
+    }
 }

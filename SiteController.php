@@ -46,6 +46,19 @@ class SiteController extends \Ip\Controller
 
     }
 
+    public function cancel($subscriptionId, $securityCode)
+    {
+        $subscription = Model::getPayment($subscriptionId);
+        if (!$subscription) {
+            throw new \Ip\Exception("Unknown subscription");
+        }
+
+        $data = array (
+            'subscriptionTitle' => $subscription['title']
+        );
+        return ipView('view/page/cancelInstructions.php', $data);
+    }
+
     public function status($paymentId, $securityCode)
     {
         $payment = Model::getPayment($paymentId);

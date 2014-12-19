@@ -31,3 +31,10 @@ $routes['paypalSubscriptionStatus/{paymentId}/{securityCode}'] = array(
     'controller' => 'SiteController',
     'action' => 'status'
 );
+
+$routes['paypalSubscriptionCancel/{subscriptionId}/{securityCode}'] = array(
+    'name' => 'PayPalSubscription_cancel',
+    'plugin' => 'PayPalSubscription',
+    'controller' => 'SiteController',
+    'action' => 'cancel'
+);
