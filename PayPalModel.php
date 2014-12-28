@@ -104,13 +104,7 @@ class PayPalModel
                     ipLog()->error('PayPalSubscription.ipn: Subscription is already active', $response);
                     return;
                 }
-                $info = array(
-                    'item' => $order['item'],
-                    'userId' => $order['userId']
-                );
-                ipLog()->info('PayPalSubscription.ipn: Successful sign-up', $info);
-                ipEvent('ipSubscriptionSignup', $info);
-                Model::update($paymentId, array('isActive' => 1));
+                $this->markAsPaid($paymentId);
                 break;
             case 'subscr_eot':
                 $order = Model::getPayment($paymentId);
@@ -292,7 +286,13 @@ class PayPalModel
 
     public function isInSandboxMode()
     {
-        return ipGetOption('PayPalSubscription.testMode');
+        return ipGetOption('PayPalSubscription.mode' == 'Test');
+    }
+
+
+    public function isInSkipMode()
+    {
+        return (ipGetOption('PayPalSubscription.mode') == 'Skip');
     }
 
     public function correctConfiguration()
@@ -302,6 +302,32 @@ class PayPalModel
         } else {
             return false;
         }
+    }
+
+    public function successStatusPage($paymentId, $securityCode)
+    {
+        $payment = Model::getPayment($paymentId);
+        $orderUrl = ipRouteUrl('PayPalSubscription_status', array('paymentId' => $paymentId, 'securityCode' => $securityCode));
+        $response = new \Ip\Response\Redirect($orderUrl);
+
+        if (!empty($payment['successUrl'])) {
+            $response = new \Ip\Response\Redirect($payment['successUrl']);
+        }
+        $response = ipFilter('PayPalSubscription_userBackResponse', $response);
+        return $response;
+    }
+
+    public function markAsPaid($paymentId)
+    {
+        $payment = Model::getPayment($paymentId);
+        $info = array(
+            'item' => $payment['item'],
+            'userId' => $payment['userId']
+        );
+        ipLog()->info('PayPalSubscription.ipn: Successful sign-up', $info);
+        ipEvent('ipSubscriptionSignup', $info);
+        Model::update($paymentId, array('isActive' => 1));
+
     }
 
 }

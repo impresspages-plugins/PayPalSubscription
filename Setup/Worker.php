@@ -81,6 +81,11 @@ class Worker
             ipDb()->execute($sql);
         }
 
+
+       if (ipGetOption('PayPalSubscription.testMode')) {
+           ipSetOption('PayPalSubscription.mode', 'Test');
+       }
+
     }
 
     public function deactivate()

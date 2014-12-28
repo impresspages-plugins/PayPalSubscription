@@ -27,15 +27,7 @@ class PublicController extends \Ip\Controller
             throw new \Ip\Exception("Unknown order security code");
         }
 
-        $payment = Model::getPayment($customData['paymentId']);
-
-        $orderUrl = ipRouteUrl('PayPalSubscription_status', array('paymentId' => $customData['paymentId'], 'securityCode' => $customData['securityCode']));
-        $response = new \Ip\Response\Redirect($orderUrl);
-
-        if (!empty($payment['successUrl'])) {
-            $response = new \Ip\Response\Redirect($payment['successUrl']);
-        }
-        $response = ipFilter('PayPalSubscription_userBackResponse', $response);
+        $response = PayPalModel::instance()->successStatusPage($customData['paymentId'], $customData['securityCode']);
         return $response;
 
     }

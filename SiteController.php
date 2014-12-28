@@ -12,6 +12,13 @@ class SiteController extends \Ip\Controller
 {
     public function subscribe($paymentId, $securityCode)
     {
+        if (PayPalModel::instance()->isInSkipMode()) {
+            PayPalModel::instance()->markAsPaid($paymentId);
+            $response = PayPalModel::instance()->successStatusPage($paymentId, $securityCode);
+            return $response;
+        }
+
+
         $payment = Model::getPayment($paymentId);
         if (!$payment) {
             throw new \Ip\Exception('Order ' . $paymentId . ' doesn\'t exist');
