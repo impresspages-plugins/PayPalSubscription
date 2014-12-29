@@ -286,7 +286,7 @@ class PayPalModel
 
     public function isInSandboxMode()
     {
-        return ipGetOption('PayPalSubscription.mode' == 'Test');
+        return (ipGetOption('PayPalSubscription.mode') == 'Test');
     }
 
 
