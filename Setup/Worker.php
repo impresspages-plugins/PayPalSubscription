@@ -15,8 +15,7 @@ class Worker
     {
 
         $version = \Ip\Application::getVersion();
-        $parts = explode('.', $version);
-        if (empty($parts[1]) || $parts[0] < 4 || $parts[1] < 2 ) {
+        if ($version < 4.2) {
             throw new \Ip\Exception('ImpressPages 4.2.0 or later required');
 
         }
